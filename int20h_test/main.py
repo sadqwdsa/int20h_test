@@ -33,7 +33,7 @@ def create_app(config_file):
     app.config.update(app_config)
 
     #  TODO: setup modules here
-    views.setup(app)
+    views.setup(app, None)
 
     return app
 
