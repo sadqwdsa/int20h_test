@@ -7,7 +7,7 @@ import yaml
 from argparse import ArgumentParser
 from flask import Flask
 
-from int20h_test import views
+from int20h_test import views, services
 
 
 def parse_config_file_name():
@@ -33,7 +33,8 @@ def create_app(config_file):
     app.config.update(app_config)
 
     #  TODO: setup modules here
-    views.setup(app, None)
+    # services.setuo(services_config)
+    views.setup(app)
 
     return app
 
