@@ -1,11 +1,12 @@
 import os
 import sys
 
+from aiohttp import web
+
 sys.path.append(os.getcwd())  # noqa
 
 import yaml
 from argparse import ArgumentParser
-from flask import Flask
 
 from int20h_test import views, services
 
@@ -26,15 +27,17 @@ def load_config(config_file):
 
 
 def create_app(config_file):
-    app = Flask(__name__)
+    app = web.Application()
     config = load_config(config_file)
 
     app_config = config['APP']
-    app.config.update(app_config)
+    # app.config.update(app_config)
 
-    #  TODO: setup modules here
-    # services.setuo(services_config)
+    #  Setup modules
     views.setup(app)
+
+    services_config = config['SERVICES']
+    services.setup(services_config)
 
     return app
 
@@ -43,4 +46,4 @@ if __name__ == '__main__':
     config_file = parse_config_file_name()
     app = create_app(config_file)
 
-    app.run(host='0.0.0.0', port=8080)
+    web.run_app(app, host='0.0.0.0', port=8080)

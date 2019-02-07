@@ -36,8 +36,7 @@ How to run:
 - With gunicorn
 
     .. code-block::
-
-        gunicorn --bind 0.0.0.0:8080 "int20h_test.main:create_app('{PATH_TO_CONFIG_FILE}')"
+        gunicorn --bind 0.0.0.0:8080 --worker-class aiohttp.GunicornWebWorker "int20h_test.main:create_app('{PATH_TO_CONFIG_FILE}')"
 
 
 Deployment
