@@ -8,7 +8,7 @@ sys.path.append(os.getcwd())  # noqa
 import yaml
 from argparse import ArgumentParser
 
-from int20h_test import views, services
+from int20h_test import views, services, api
 
 
 def parse_config_file_name():
@@ -19,7 +19,7 @@ def parse_config_file_name():
     return args.config
 
 
-def load_config(config_file):
+def load_config_from_file(config_file):
     with open(config_file) as f:
         config = yaml.load(f)
 
@@ -28,16 +28,16 @@ def load_config(config_file):
 
 def create_app(config_file):
     app = web.Application()
-    config = load_config(config_file)
-
-    app_config = config['APP']
-    # app.config.update(app_config)
+    config = load_config_from_file(config_file)
 
     #  Setup modules
-    views.setup(app)
-
     services_config = config['SERVICES']
     services.setup(services_config)
+
+
+    views.setup(app)
+    api.setup(app)
+
 
     return app
 
