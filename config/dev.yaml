@@ -1,3 +1,12 @@
 APP:
   DEBUG: True
   ENV: "development"
+
+SERVICES:
+  FLICKR:
+    API_KEY: "97a2422ac96dc3a678c50d0191ad2a7c"
+    API_SECRET: "df82f3631177bf5c"
+
+  FACE_PLUS_PLUS:
+    API_KEY: "Khsza8R0YehX6JTnlrh9AxzF8DPASWFR"
+    API_SECRET: "PsEQCMU4Tkk7Uoeyx1LK9pyQd8aDS6ay"
