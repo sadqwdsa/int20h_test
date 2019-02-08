@@ -15,10 +15,10 @@ class PhotoInfo:
         if other is None:
             return False
 
-        if not isinstance(other, self.__class__):
-            return False
+        if other is self:
+            return True
 
-        return self._id == other._id
+        return self.id == other.id
 
     def __hash__(self):
         return hash(str(self._id))

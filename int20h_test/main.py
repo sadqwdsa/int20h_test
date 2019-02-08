@@ -30,14 +30,11 @@ def create_app(config_file):
     app = web.Application()
     config = load_config_from_file(config_file)
 
-    #  Setup modules
     services_config = config['SERVICES']
     services.setup(services_config)
 
-
     views.setup(app)
     api.setup(app)
-
 
     return app
 
