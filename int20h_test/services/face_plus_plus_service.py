@@ -64,12 +64,18 @@ class FacePlusPlusService:
 
         return fpp_service
 
-    async def filter_photos_by_emotions(self, photos_info, emotions):
+    async def filter_photos_by_emotions(self, photos_info, emotions, count):
+        if not emotions:
+            return photos_info[0: count]
+
         filtered_photos = []
         emotions_set = set(emotions)
 
         async with aiohttp.ClientSession() as session:
-            for photo_info in photos_info:
+            idx = 0
+
+            while len(filtered_photos) < count:
+                photo_info = photos_info[idx]
                 photo_emotions = await self._get_photo_emotions_info(
                     session,
                     photo_info,

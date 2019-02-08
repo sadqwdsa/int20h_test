@@ -5,22 +5,28 @@ from int20h_test import services
 
 async def get_photos(request):
     json = await request.json()
+
     emotions = json.get('emotions', [])
+    from_id = json.get('from_id', 0)
+    count = json.get('count', 10)
 
     flickr_service = services.flick_service()
-    photos_info = await flickr_service.get_photos_info()
+    photos_info = await flickr_service.get_photos_info(from_id)
 
     fpp_service = services.face_plus_plus_service()
     filtered_photos_info = await fpp_service.filter_photos_by_emotions(
-        photos_info=photos_info[0:10],
+        photos_info=photos_info,
         emotions=emotions,
+        count=count,
     )
 
     if photos_info is not None:
-        photos_urls = [photo.origin_url for photo in filtered_photos_info]
         payload = {
             'status': 'OK',
-            'photos_urls': photos_urls,
+            'photos_info': [{
+                'id': photo_info.id,
+                'url': photo_info.origin_url,
+            } for photo_info in filtered_photos_info],
         }
 
     else:
