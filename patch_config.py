@@ -1,7 +1,7 @@
 import os
 
 import yaml
-from int20h_test.main import parse_config_file_name, load_config_from_file
+from int20h_test.utils import parse_config_file_name, load_config_from_file
 
 
 def patch_config(config):
