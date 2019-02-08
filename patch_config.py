@@ -12,7 +12,7 @@ def patch_config(config):
 
 if __name__ == '__main__':
     config_file_name = parse_config_file_name()
-    print('Patching {}...'.format(config_file_name))
+    print(f'Patching {config_file_name}...')
 
     config = load_config_from_file(config_file_name)
     patch_config(config)
@@ -20,4 +20,4 @@ if __name__ == '__main__':
     with open(config_file_name, 'w') as f:
         yaml.dump(config, f)
 
-    print('Successfully patched {}...'.format(config_file_name))
+    print(f'Successfully patched {config_file_name}...')
