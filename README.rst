@@ -25,7 +25,7 @@ Get started
 
 
 How to run:
--------------------
+-----------
 
 - Pure python
 
@@ -38,6 +38,29 @@ How to run:
     .. code-block::
 
         gunicorn --bind 0.0.0.0:8080 --worker-class aiohttp.GunicornWebWorker "int20h_test.main:create_app('{PATH_TO_CONFIG_FILE}')"
+
+
+API:
+----
+
+- GET /get_photos
+
+    - Request:
+
+        .. code-block::
+
+            {
+                emotions: Arrays of emotions ids
+            }
+
+    - Response:
+
+        .. code-block::
+
+            {
+                status: OK|ERR,
+                photos_urls: Array of photos urls
+            }
 
 
 Deployment

@@ -14,3 +14,4 @@ SERVICES:
   FACE_PLUS_PLUS:
     API_KEY: "Khsza8R0YehX6JTnlrh9AxzF8DPASWFR"
     API_SECRET: "PsEQCMU4Tkk7Uoeyx1LK9pyQd8aDS6ay"
+    API_URL: "https://api-us.faceplusplus.com/facepp/v3/detect"
