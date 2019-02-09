@@ -4,7 +4,7 @@ APP:
 
 SERVICES:
   FLICKR:
-    API_KEY: "97a2422ac96dc3a678c50d0191ad2a7c"
+    API_KEY: ""
     API_URL: "https://api.flickr.com/services/rest/"
     SEARCH_ALBUM_ID: "72157674388093532"
     SEARCH_USER_ID: "144522605@N06"
@@ -12,6 +12,6 @@ SERVICES:
     PGOTOS_INFO_CACHE_LIFE_TIME: 3600
 
   FACE_PLUS_PLUS:
-    API_KEY: "Khsza8R0YehX6JTnlrh9AxzF8DPASWFR"
-    API_SECRET: "PsEQCMU4Tkk7Uoeyx1LK9pyQd8aDS6ay"
+    API_KEY: ""
+    API_SECRET: ""
     API_URL: "https://api-us.faceplusplus.com/facepp/v3/detect"

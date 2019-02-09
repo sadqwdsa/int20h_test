@@ -1,1 +1,1 @@
-web: gunicorn --bind 0.0.0.0:$PORT --worker-class aiohttp.GunicornWebWorker "int20h_test.main:create_app('$PATH_TO_CONFIG_FILE')"
+web: python patch_config.py --config $PATH_TO_CONFIG_DEFAULT && gunicorn --bind 0.0.0.0:$PORT --worker-class aiohttp.GunicornWebWorker "int20h_test.main:create_app('$PATH_TO_CONFIG_FILE')"
