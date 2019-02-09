@@ -1,5 +1,4 @@
 import asyncio
-import bisect
 from urllib.parse import urlencode
 
 import aiohttp
