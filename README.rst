@@ -45,12 +45,24 @@ API:
 
 - GET /get_photos
 
+    - Emotions ids:
+
+        - SADNESS_ID=0
+        - NEUTRAL_ID=1
+        - DISGUST_ID=2
+        - ANGER_ID=3
+        - SURPRISE_ID=4
+        - FEAR_ID=5
+        - HAPPINESS_ID=6
+
     - Request:
 
         .. code-block::
 
             {
-                emotions: Arrays of emotions ids
+                emotions: [array<int>] - Arrays of emotions ids,
+                from_id: [int] - This photo with tis id will be not included in result,
+                count: [int] - Count of photos to return
             }
 
     - Response:
@@ -58,9 +70,13 @@ API:
         .. code-block::
 
             {
-                status: OK|ERR,
-                photos_urls: Array of photos urls
+                status: [string(OK|ERR)] - response status,
+                photos_urls: [array<{
+                    id: [int] - Photo id,
+                    url: [string] - Photo url
+                }>] - Photos info sorted by id
             }
+
 
 
 Deployment

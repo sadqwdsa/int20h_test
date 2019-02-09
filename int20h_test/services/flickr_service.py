@@ -75,22 +75,49 @@ class FlickrService:
         for task in done:
             loaded_photos_info.update(task.result())
 
-        return tuple(loaded_photos_info)
+        distinct_photos_info = list(loaded_photos_info)
+        distinct_photos_info.sort(key=lambda photo_info: photo_info.id)
+
+        return tuple(distinct_photos_info)
 
     def _invalidate_photos_info_cache(self):
         self._photos_info_cache = None
 
-    async def get_photos_info(self):
-        if self._photos_info_cache is None:
-            self._photos_info_cache = await self._load_photos_info()
+    #  LoL, `bisect.bisect` can not search with key
+    def _bisect_with_key(self, sorterd_collection, search_value, key):
+        lo = 0
+        hi = len(sorterd_collection)
+
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if key(sorterd_collection[mid]) < search_value:
+                lo = mid + 1
+            else:
+                hi = mid
+        return lo
+
+    async def get_photos_info(self, from_id):
+        all_photos_info = self._photos_info_cache
+
+        if all_photos_info is None:
+            all_photos_info = await self._load_photos_info()
+            self._photos_info_cache = all_photos_info
 
             loop = asyncio.get_event_loop()
             loop.call_later(
                 self._photos_info_cache_life_time,
                 self._invalidate_photos_info_cache,
             )
+        from_idx = self._bisect_with_key(
+            sorterd_collection=all_photos_info,
+            search_value=from_id,
+            key=lambda photo_info: photo_info.id,
+        )
 
-        return self._photos_info_cache
+        from_idx += 1  # Because not inclusive
+        result_photos_info = all_photos_info[from_idx: len(all_photos_info)]
+
+        return result_photos_info
 
     async def _get_photos_from_photoset(self, session, photoset_id, user_id):
         url_params = {
@@ -183,7 +210,7 @@ class FlickrService:
 
         if origin_url and photo_id:
             return PhotoInfo(
-                id=photo_id,
+                id=int(photo_id),
                 origin_url=origin_url
             )
 
