@@ -11,13 +11,15 @@ def patch_config(config):
 
 
 if __name__ == '__main__':
-    config_file_name = parse_config_file_name()
-    print(f'Patching {config_file_name}...')
+    config_default = parse_config_file_name()
+    config_file = os.environ.get('PATH_TO_CONFIG_FILE')
 
-    config = load_config_from_file(config_file_name)
+    print(f'Patching {config_default}...')
+
+    config = load_config_from_file(config_default)
     patch_config(config)
 
-    with open(config_file_name, 'w') as f:
+    with open(config_file, 'w+') as f:
         yaml.dump(config, f)
 
-    print(f'Successfully patched {config_file_name}...')
+    print(f'Successfully patched {config_file}...')
