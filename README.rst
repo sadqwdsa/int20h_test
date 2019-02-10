@@ -27,6 +27,16 @@ Get started
 How to run:
 -----------
 
+- Patch config file (PATH_TO_CONFIG_DEFAULT) with API keys, this will create config file copy - PATH_TO_CONFIG_FILE
+
+    .. code-block::
+    
+        export PATH_TO_CONFIG_FILE = {YOUR_PATH_TO_CONFIG_FILE}
+        export FACE_PLUS_PLUS_API_KEY = {YOUR_FACE_PLUS_PLUS_API_KEY}
+        export FLICKR_API_KEY = {YOUR_FLICKR_API_KEY}
+        
+        python patch_config.py --config {PATH_TO_CONFIG_DEFAULT}
+
 - Pure python
 
     .. code-block::
@@ -82,4 +92,4 @@ API:
 Deployment
 -------------------
 
-::TODO
+Application is running on heroku service and can be found here - https://int20h-test.herokuapp.com/

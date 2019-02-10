@@ -87,13 +87,15 @@ class FacePlusPlusService:
                 if len(conjunction) > 0:
                     filtered_photos.append(photo_info)
 
+                idx += 1
+
         return tuple(filtered_photos)
 
     async def _get_photo_emotions_info(self, session, photo_info):
         emotions_ids = self._photo_emotions_cache.get(photo_info)
 
         if emotions_ids is None:
-            emotions_ids = []
+            emotions_ids_set = set()
             url_params = {
                 'api_key': self._api_key,
                 'api_secret': self._api_secret,
@@ -110,26 +112,22 @@ class FacePlusPlusService:
 
                 if faces is not None:
                     for face in faces:
-                        probable_emotion = None
                         attributes = face.get('attributes')
 
                         if attributes:
                             emotion_probabilities = attributes.get('emotion')
-                            max_probability = 0
+                            min_emotion_percent = 10.0
 
                             for emotion, probability in emotion_probabilities.items():
-                                if probability > max_probability:
-                                    probable_emotion = emotion
+                                if probability > min_emotion_percent:
+                                    probable_emotion_id = self._get_emotion_id(
+                                        emotion
+                                    )
 
-                        if probable_emotion:
-                            probable_emotion_id = self._get_emotion_id(
-                                probable_emotion
-                            )
+                                    emotions_ids_set.add(probable_emotion_id)
 
-                            if probable_emotion_id is not None:
-                                emotions_ids.append(probable_emotion_id)
-
-            self._photo_emotions_cache[photo_info] = tuple(emotions_ids)
+            emotions_ids = tuple(emotions_ids_set)
+            self._photo_emotions_cache[photo_info] = emotions_ids
 
         return emotions_ids
 
