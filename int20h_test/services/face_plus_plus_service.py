@@ -100,7 +100,7 @@ class FacePlusPlusService:
                 'api_key': self._api_key,
                 'api_secret': self._api_secret,
                 'return_attributes': 'emotion',
-                'image_url': photo_info.origin_url
+                'image_url': photo_info.medium_url
             }
 
             url_query = urlencode(url_params, encoding='UTF-8')
