@@ -7,3 +7,4 @@ async def index(request):
 
 def setup(app):
     app.router.add_get('/', index)
+    app.add_routes([web.static('/static', 'static')])
