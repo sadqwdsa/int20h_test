@@ -5,14 +5,14 @@
         <a-select
           mode="multiple"
           :defaultValue="[]"
-          style="width: 35%;"
+          style="width: 70%;"
           @change="onSelect"
           placeholder="Please select emotions"
         >
 
           <a-select-option
-            v-for="emotionId in emotionsConst"
-            :key="emotionId"
+            v-for="emotionId in emotionIds"
+            :key="num2emotion[emotionId]"
           >{{num2emotion[emotionId]}}
           </a-select-option>
 
@@ -21,7 +21,7 @@
         <a-button style="margin-left: 1%" @click="onFilterPressed"> Filter </a-button>
       </div>
 
-      <div style="margin: 10px">
+      <div style="margin: 10px;">
         <gallery
           :images="images.map(img => img.origin_url)"
           :index="index"
@@ -43,7 +43,7 @@
         <a-spin style="margin: 15px" v-if="displaySpin" size="large" />
       </div>
 
-      <div style="text-align: center;">
+      <div style="text-align: center; width: 100%; display: inline-block;">
         <a-button :disabled="disableMore" style="margin-top: 10px; margin-bottom: 50px" @click="getPhotos"> More </a-button>
       </div>
 
@@ -80,14 +80,14 @@ export default {
 
   data: function () {
     return {
-      images: [], // array contains elements of the following schema { id, url }
+      images: [],
       index: null,
       offset: 0,
       num2emotion: CONST.num2emotion,
-      nextEmotions: new Set() /*new Set(Object.values(CONST.EMOTIONS))*/,
+      nextEmotions: new Set(),
       currentEmotions: new Set(),
       isFilterPressed: false,
-      emotionsConst: Object.values(CONST.EMOTIONS), //should not be changed
+      emotionIds: Object.values(CONST.emotionIds),
       disableMore: false,
       displaySpin: true
     }
@@ -96,6 +96,7 @@ export default {
   methods: {
     getPhotos() {
       this.displaySpin = true;
+      this.disableMore = true;
       let emotions = this.isFilterPressed ? this.nextEmotions : this.currentEmotions;
       this.isFilterPressed = false;
       let jsonEmotionsList = JSON.stringify(Array.from(emotions));
@@ -107,12 +108,14 @@ export default {
         .then(payload => {
           if (payload.status === CONST.RESP_STATUS.ERR) {
             console.log('Unexpected response code: ' + payload.status);
+            this.disableMore = false;
           } else {
             if (payload.photos_info.length < CONST.IMAGES_PER_REQ) {
               this.disableMore = true;
             }
 
             this.displaySpin = false;
+            this.disableMore = false;
             this.images = this.images.concat(payload.photos_info);
             let lastImg = this.images[this.images.length - 1];
             this.offset = lastImg.id;
@@ -133,7 +136,10 @@ export default {
     },
 
     onSelect(value) {
-      this.nextEmotions = new Set(Object.values(value));
+      console.log(value);
+      let ids = value.map(x => CONST.emotionIds[x]);
+      console.log(ids);
+      this.nextEmotions = new Set(Object.values(ids));
     },
   },
 
@@ -148,7 +154,7 @@ export default {
   components: {
     'gallery': VueGallery,
     'a-select': Select,
-    'a-select-option': Select,
+    'a-select-option': Select.Option,
     'a-back-top': BackTop,
     'a-button': Button,
     'a-spin': Spin
