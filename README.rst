@@ -5,19 +5,25 @@ Test app for INT20H
 Get started
 ----------------
 
-1. Create a Python virtual environment.
+1. Install virtualenv package.
+
+    .. code-block::
+
+        python3 -m pip install virtualenv
+
+2. Create a Python virtual environment.
 
     .. code-block::
 
         python3 -m virtualenv venv
 
-2. Activate virtualenv.
+3. Activate virtualenv.
 
     .. code-block::
 
         source venv/bin/activate
 
-3. Install requirements
+4. Install requirements
 
     .. code-block::
 
@@ -41,7 +47,7 @@ How to run:
 
     .. code-block::
 
-        python int_20h_test/main.py --config {PATH_TO_CONFIG_FILE}
+        python int20h_test/main.py --config {PATH_TO_CONFIG_FILE}
 
 - With gunicorn
 
@@ -67,23 +73,30 @@ API:
 
     - Request:
 
-        .. code-block::
+        Query params:
 
-            {
+            .. code-block::
+
                 emotions: [array<int>] - Arrays of emotions ids,
                 from_id: [int] - This photo with tis id will be not included in result,
                 count: [int] - Count of photos to return
-            }
+
+        Example:
+
+            .. code-block::
+
+                /api/get_photos?emotions=[3,5]&from_id=123321&count=8
 
     - Response:
 
         .. code-block::
 
             {
-                status: [string(OK|ERR)] - response status,
-                photos_urls: [array<{
+                status: [string(OK|ERR)] - Response status,
+                photos_info: [array<{
                     id: [int] - Photo id,
-                    url: [string] - Photo url
+                    origin_url: [string] - Original photo url
+                    min_url: [string] - Small photo url
                 }>] - Photos info sorted by id
             }
 
