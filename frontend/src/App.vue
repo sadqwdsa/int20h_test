@@ -23,7 +23,7 @@
 
     <div style="margin: 10px">
       <gallery
-        :images="images.map(img => img.url)"
+        :images="images.map(img => img.origin_url)"
         :index="index"
         @close="index = null"
       >
@@ -34,7 +34,7 @@
         v-for="(image, imageIndex) in images"
         :key="imageIndex"
         @click="index = imageIndex"
-        :style="{ backgroundImage: 'url(' + image.url + ')', width: '240px', height: '200px' }"
+        :style="{ backgroundImage: 'url(' + image.min_url + ')', width: '240px', height: '200px' }"
       >
       </div>
     </div>
