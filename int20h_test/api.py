@@ -26,7 +26,8 @@ async def get_photos(request):
             'status': 'OK',
             'photos_info': [{
                 'id': photo_info.id,
-                'url': photo_info.origin_url,
+                'origin_url': photo_info.origin_url,
+                'min_url': photo_info.min_url,
             } for photo_info in filtered_photos_info],
         }
 
