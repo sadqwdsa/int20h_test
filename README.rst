@@ -92,4 +92,4 @@ API:
 Deployment
 -------------------
 
-Application is running on heroku service and can be found .. _here: https://int20h-test.herokuapp.com/
+Application is running on heroku service and can be found [here.](https://int20h-test.herokuapp.com/)
