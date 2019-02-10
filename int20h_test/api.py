@@ -2,13 +2,14 @@ from aiohttp import web
 
 from int20h_test import services
 
+import json
 
 async def get_photos(request):
-    json = await request.json()
 
-    emotions = json.get('emotions', [])
-    from_id = json.get('from_id', 0)
-    count = json.get('count', 10)
+    emotions_str = request.rel_url.query['emotions'] or ''
+    emotions = json.loads(emotions_str) or []
+    from_id = int(request.rel_url.query['from_id']) or 0
+    count = int(request.rel_url.query['count']) or 10
 
     flickr_service = services.flick_service()
     photos_info = await flickr_service.get_photos_info(from_id)
