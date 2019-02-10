@@ -88,8 +88,8 @@ export default {
       currentEmotions: new Set(),
       isFilterPressed: false,
       emotionsConst: Object.values(CONST.EMOTIONS), //should not be changed
-      displaySpin: true,
-      disableMore: false
+      disableMore: false,
+      displaySpin: true
     }
   },
 
