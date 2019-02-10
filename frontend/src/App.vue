@@ -1,56 +1,58 @@
 <template>
-  <div id="app" style="width: 1024px; margin-left: calc(50% - 512px);">
+  <div id="app">
+    <div style="width: 1024px; margin-left: calc(50% - 512px);">
+      <div style="text-align: center; padding-top: 1%; width: 100%">
+        <a-select
+          mode="multiple"
+          :defaultValue="[]"
+          style="width: 35%;"
+          @change="onSelect"
+          placeholder="Please select emotions"
+        >
 
-    <div style="text-align: center; padding-top: 1%; width: 100%">
-      <a-select
-        mode="multiple"
-        :defaultValue="[]"
-        style="width: 35%;"
-        @change="onSelect"
-        placeholder="Please select emotions"
-      >
+          <a-select-option
+            v-for="emotionId in emotionsConst"
+            :key="emotionId"
+          >{{num2emotion[emotionId]}}
+          </a-select-option>
 
-        <a-select-option
-          v-for="emotionId in emotionsConst"
-          :key="emotionId"
-        >{{num2emotion[emotionId]}}
-        </a-select-option>
+        </a-select>
 
-      </a-select>
+        <a-button style="margin-left: 1%" @click="onFilterPressed"> Filter </a-button>
+      </div>
 
-      <a-button style="margin-left: 1%" @click="onFilterPressed"> Filter </a-button>
-    </div>
+      <div style="margin: 10px">
+        <gallery
+          :images="images.map(img => img.origin_url)"
+          :index="index"
+          @close="index = null"
+        >
+        </gallery>
 
-    <div style="margin: 10px">
-      <gallery
-        :images="images.map(img => img.origin_url)"
-        :index="index"
-        @close="index = null"
-      >
-      </gallery>
+        <div
+          class="image"
+          v-for="(image, imageIndex) in images"
+          :key="imageIndex"
+          @click="index = imageIndex"
+          :style="{ backgroundImage: 'url(' + image.min_url + ')', width: '240px', height: '200px' }"
+        >
+        </div>
+      </div>
 
-      <div
-        class="image"
-        v-for="(image, imageIndex) in images"
-        :key="imageIndex"
-        @click="index = imageIndex"
-        :style="{ backgroundImage: 'url(' + image.min_url + ')', width: '240px', height: '200px' }"
-      >
+      <div style="text-align: center">
+        <a-spin style="margin: 15px" v-if="displaySpin" size="large" />
+      </div>
+
+      <div style="text-align: center;">
+        <a-button :disabled="disableMore" style="margin-top: 10px; margin-bottom: 50px" @click="getPhotos"> More </a-button>
+      </div>
+
+      <div>
+        <a-back-top />
       </div>
     </div>
 
-    <div style="text-align: center">
-      <a-spin style="margin: 15px" v-if="displaySpin" size="large" />
-    </div>
-
-    <div style="text-align: center;">
-      <a-button style="margin: 10px" @click="getPhotos"> More </a-button>
-    </div>
-
-    <div>
-      <a-back-top />
-    </div>
-
+    <div class="footer">Developed by <b>sadqwdsa</b> int20h team</div>
   </div>
 </template>
 
@@ -86,6 +88,7 @@ export default {
       currentEmotions: new Set(),
       isFilterPressed: false,
       emotionsConst: Object.values(CONST.EMOTIONS), //should not be changed
+      disableMore: false,
       displaySpin: true
     }
   },
@@ -101,18 +104,22 @@ export default {
 
       axios.get(path, { params: queryParams })
         .then(resp => resp.data)
-        .then(resp => {
-          if (resp.status === CONST.RESP_STATUS.ERR) {
-            console.log('Unexpected response code: ' + resp.status);
+        .then(payload => {
+          if (payload.status === CONST.RESP_STATUS.ERR) {
+            console.log('Unexpected response code: ' + payload.status);
           } else {
+            if (payload.photos_info.length < CONST.IMAGES_PER_REQ) {
+              this.disableMore = true;
+            }
+
             this.displaySpin = false;
-            this.images = this.images.concat(resp.photos_info);
+            this.images = this.images.concat(payload.photos_info);
             let lastImg = this.images[this.images.length - 1];
             this.offset = lastImg.id;
           }
         })
         .catch(function (reason) {
-          console.log('Error ocurred while performing request: ' + reason);
+          console.log('Error occurred while performing request: ' + reason);
         })
     },
 
@@ -121,12 +128,17 @@ export default {
       this.offset = 0;
       this.currentEmotions = this.nextEmotions;
       this.isFilterPressed = true;
+      this.disableMore = false;
       this.getPhotos();
     },
 
     onSelect(value) {
       this.nextEmotions = new Set(Object.values(value));
     },
+  },
+
+  updated() {
+    window.scrollTo(0, document.body.scrollHeight);
   },
 
   beforeMount() {
@@ -152,5 +164,22 @@ export default {
     background-position: center center;
     border: 1px solid #ebebeb;
     margin: 5px;
+  }
+
+  .footer {
+    font-size: 14px;
+    font-family:
+            "Chinese Quote",
+            -apple-system,
+            BlinkMacSystemFont;
+
+    position: fixed;
+    bottom: 0;
+    background-color: #c7c8d0;
+    width: 100%;
+    height: 40px;
+    display: block;
+    text-align: center;
+    padding-top: 10px;
   }
 </style>

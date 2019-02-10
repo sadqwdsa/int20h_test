@@ -1,8 +1,8 @@
+import json
+
 from aiohttp import web
 
 from int20h_test import services
-
-import json
 
 
 async def get_photos(request):
