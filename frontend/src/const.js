@@ -3,14 +3,14 @@ const RESP_STATUS = {
   ERR: 'ERROR'
 };
 
-const EMOTIONS = {
-  SADNESS: 0,
-  NEUTRAL: 1,
-  DISGUST: 2,
-  ANGER: 3,
-  SURPRISE: 4,
-  FEAR: 5,
-  HAPPINESS: 6
+const emotion2num = {
+  sadness: 0,
+  neutral: 1,
+  disgust: 2,
+  anger: 3,
+  surprise: 4,
+  fear: 5,
+  happiness: 6
 };
 
 const num2emotion = {
@@ -27,7 +27,7 @@ const IMAGES_PER_REQ = 8;
 
 export default {
   RESP_STATUS: RESP_STATUS,
-  EMOTIONS: EMOTIONS,
+  emotionIds: emotion2num,
   num2emotion: num2emotion,
   IMAGES_PER_REQ: IMAGES_PER_REQ
 }
