@@ -118,7 +118,7 @@ class FlickrService:
             'nojsoncallback': 1,
             'photoset_id': photoset_id,
             'user_id': user_id,
-            'extras': 'url_m, url_b, url_z',
+            'extras': 'url_m, url_h, url_z',
             'per_page': 500,
         }
 
@@ -160,7 +160,7 @@ class FlickrService:
             'format': 'json',
             'nojsoncallback': 1,
             'text': search_test,
-            'extras': 'url_m, url_b, url_z',
+            'extras': 'url_m, url_h, url_z',
             'per_page': 500,
         }
 
@@ -196,7 +196,7 @@ class FlickrService:
             return photos_info
 
     def _deserialize_photo_info(self, photo_payload):
-        origin_url = photo_payload.get('url_b')
+        origin_url = photo_payload.get('url_h')
         photo_id = photo_payload.get('id')
         min_url = photo_payload.get('url_m')
         medium_url = photo_payload.get('url_z')
