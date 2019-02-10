@@ -15,14 +15,12 @@ class FlickrService:
         search_user_id,
         search_text,
         api_url,
-        photos_info_cache_life_time,
     ):
         self._api_key = api_key
         self._search_album_id = search_album_id
         self._search_user_id = search_user_id
         self._search_text = search_text
         self._api_url = api_url
-        self._photos_info_cache_life_time = photos_info_cache_life_time
 
         self._photos_info_cache = None
 
@@ -35,15 +33,12 @@ class FlickrService:
         search_user_id = config.get('SEARCH_USER_ID')
         search_text = config.get('SEARCH_TEXT')
         api_url = config.get('API_URL')
-        photos_info_cache_life_time = config.get('PGOTOS_INFO_CACHE_LIFE_TIME')
-
         if (
             api_key
             and search_album_id
             and search_user_id
             and search_text
             and api_url
-            and photos_info_cache_life_time
         ):
             flickr_service = FlickrService(
                 api_key=api_key,
@@ -51,7 +46,12 @@ class FlickrService:
                 search_user_id=search_user_id,
                 search_text=search_text,
                 api_url=api_url,
-                photos_info_cache_life_time=photos_info_cache_life_time,
+            )
+
+            loop = asyncio.get_event_loop()
+            asyncio.run_coroutine_threadsafe(
+                coro=flickr_service._load_photos_info(),
+                loop=loop,
             )
 
         return flickr_service
@@ -78,7 +78,7 @@ class FlickrService:
         distinct_photos_info = list(loaded_photos_info)
         distinct_photos_info.sort(key=lambda photo_info: photo_info.id)
 
-        return tuple(distinct_photos_info)
+        self._photos_info_cache = tuple(distinct_photos_info)
 
     def _invalidate_photos_info_cache(self):
         self._photos_info_cache = None
@@ -99,15 +99,6 @@ class FlickrService:
     async def get_photos_info(self, from_id):
         all_photos_info = self._photos_info_cache
 
-        if all_photos_info is None:
-            all_photos_info = await self._load_photos_info()
-            self._photos_info_cache = all_photos_info
-
-            loop = asyncio.get_event_loop()
-            loop.call_later(
-                self._photos_info_cache_life_time,
-                self._invalidate_photos_info_cache,
-            )
         from_idx = self._bisect_with_key(
             sorterd_collection=all_photos_info,
             search_value=from_id,
