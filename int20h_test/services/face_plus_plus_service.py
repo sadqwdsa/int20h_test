@@ -74,7 +74,7 @@ class FacePlusPlusService:
         async with aiohttp.ClientSession() as session:
             idx = 0
 
-            while len(filtered_photos) < count:
+            while len(filtered_photos) < count and idx < len(photos_info):
                 photo_info = photos_info[idx]
                 photo_emotions = await self._get_photo_emotions_info(
                     session,
@@ -116,7 +116,7 @@ class FacePlusPlusService:
 
                         if attributes:
                             emotion_probabilities = attributes.get('emotion')
-                            min_emotion_percent = 10.0
+                            min_emotion_percent = 30.0
 
                             for emotion, probability in emotion_probabilities.items():
                                 if probability > min_emotion_percent:
