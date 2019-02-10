@@ -21,7 +21,7 @@
       <a-button style="margin-left: 1%" @click="onFilterPressed"> Filter </a-button>
     </div>
 
-    <div>
+    <div style="margin: 10px">
       <gallery
         :images="images.map(img => img.url)"
         :index="index"
@@ -39,8 +39,12 @@
       </div>
     </div>
 
-    <div style="text-align: center; padding-top: 1%;">
-      <a-button @click="getPhotos"> More </a-button>
+    <div style="text-align: center">
+      <a-spin style="margin: 15px" v-if="displaySpin" size="large" />
+    </div>
+
+    <div style="text-align: center;">
+      <a-button style="margin: 10px" @click="getPhotos"> More </a-button>
     </div>
 
     <div>
@@ -52,7 +56,7 @@
 
 <script>
   import VueGallery from 'vue-gallery';
-  import { Select, BackTop, Button } from 'ant-design-vue'
+  import { Select, BackTop, Button, Spin} from 'ant-design-vue'
 
   import CONST from './const';
   import axios from 'axios';
@@ -69,10 +73,6 @@
     }
   }
 
-  function set2Array(set) {
-    return Array.from(set)
-  }
-
 export default {
   name: 'app',
 
@@ -86,28 +86,27 @@ export default {
       currentEmotions: new Set(),
       isFilterPressed: false,
       emotionsConst: Object.values(CONST.EMOTIONS), //should not be changed
+      displaySpin: true
     }
   },
 
   methods: {
     getPhotos() {
+      this.displaySpin = true;
       let emotions = this.isFilterPressed ? this.nextEmotions : this.currentEmotions;
       this.isFilterPressed = false;
-      console.log('next emotions: ' + set2Array(this.nextEmotions) + '\n');
-      console.log('currentEmotions: ' + set2Array(this.currentEmotions) + '\n');
-      let jsonEmotionsList = JSON.stringify(set2Array(emotions));
+      let jsonEmotionsList = JSON.stringify(Array.from(emotions));
       let queryParams = formQueryParams(jsonEmotionsList, this.offset, CONST.IMAGES_PER_REQ);
       let path = '/api/get_photos';
 
-      axios.get(path, { params: queryParams }).then(response =>
-          response.data
-      )
+      axios.get(path, { params: queryParams })
+        .then(resp => resp.data)
         .then(resp => {
           if (resp.status === CONST.RESP_STATUS.ERR) {
             console.log('Unexpected response code: ' + resp.status);
           } else {
+            this.displaySpin = false;
             this.images = this.images.concat(resp.photos_info);
-            console.log(this.images);
             let lastImg = this.images[this.images.length - 1];
             this.offset = lastImg.id;
           }
@@ -119,13 +118,13 @@ export default {
 
     onFilterPressed() {
       this.images = [];
-      this.getPhotos();
+      this.offset = 0;
       this.currentEmotions = this.nextEmotions;
       this.isFilterPressed = true;
+      this.getPhotos();
     },
 
     onSelect(value) {
-      console.log(`selected ${value}`);
       this.nextEmotions = new Set(Object.values(value));
     },
   },
@@ -139,7 +138,8 @@ export default {
     'a-select': Select,
     'a-select-option': Select,
     'a-back-top': BackTop,
-    'a-button': Button
+    'a-button': Button,
+    'a-spin': Spin
   },
 }
 </script>
