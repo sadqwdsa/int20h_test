@@ -39,7 +39,7 @@
         </div>
       </div>
 
-      <div style="text-align: center">
+      <div style="text-align: center; width: 100%; display: inline-block;">
         <a-spin style="margin: 15px" v-if="displaySpin" size="large" />
       </div>
 
@@ -112,10 +112,11 @@ export default {
           } else {
             if (payload.photos_info.length < CONST.IMAGES_PER_REQ) {
               this.disableMore = true;
+            } else {
+              this.disableMore = false;
             }
 
             this.displaySpin = false;
-            this.disableMore = false;
             this.images = this.images.concat(payload.photos_info);
             let lastImg = this.images[this.images.length - 1];
             this.offset = lastImg.id;
